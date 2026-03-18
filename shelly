@@ -24,7 +24,7 @@ function usage() {
   echo
   echo -e "  -a, --array\t\toutput as a C array named \"shellcode\""
   echo -e "  -w, --write\t\twrite to file \"shellcode\" or \"shellcode.c\""
-  echo -e "  -q, --quite\t\tdo not print to stdout, implies write to file"
+  echo -e "  -q, --quiet\t\tdo not print to stdout, implies write to file"
   echo -e "  -i, --input\t\twrite assembly instructions to a file"
   echo -e "  -s, --assemble\tassemble instructions from a file"
   echo
@@ -178,7 +178,7 @@ function msg() {
   set_style color_39
   echo -n ") " > /dev/stderr
   set_style bold_off
-  echo $1 > /dev/stderr
+  echo -e $1 > /dev/stderr
   set_style reset
 }
 
@@ -186,11 +186,11 @@ function wrn() {
   set_style bright_yellow bold
   echo -n "(" > /dev/stderr
   set_style color_202
-  echo -n "*" > /dev/stderr
+  echo -n "!" > /dev/stderr
   set_style bright_yellow
   echo -n ") " > /dev/stderr
   set_style bold_off
-  echo $1 > /dev/stderr
+  echo -e $1 > /dev/stderr
   set_style reset
 }
 
@@ -198,11 +198,11 @@ function err() {
   set_style bright_white bold
   echo -n "(" > /dev/stderr
   set_style color_196
-  echo -n "!" > /dev/stderr
+  echo -n "x" > /dev/stderr
   set_style bright_white
   echo -n ") " > /dev/stderr
   set_style color_9
-  echo $1 > /dev/stderr
+  echo -e $1 > /dev/stderr
   set_style reset
 }
 
@@ -297,7 +297,7 @@ function write_to_file() {
 
 array=false
 write=false
-quite=false
+quiet=false
 input=false
 
 # Check if an argument is provided (the object file or ELF file)
@@ -333,7 +333,7 @@ while [[ -n "$1" ]]; do
   [[ "$1" == --write || "$1" == -w ]] && write=true
 
   # Check if need not print to stdout
-  [[ "$1" == --quite || "$1" == -q ]] && quite=true
+  [[ "$1" == --quiet || "$1" == -q ]] && quiet=true
 
   shift
 done
@@ -358,7 +358,7 @@ OBJDUMP="$(command -v objdump)"
   wrn "BRUH!" && wrn "objdump not found" && exit 1
 
 # Quite implies write to file
-[[ -n "$quite" && "$quite" == true ]] && write=true && writer=write_to_file
+[[ -n "$quiet" && "$quiet" == true ]] && write=true && writer=write_to_file
 
 # Format for C array
 format_array='
@@ -391,7 +391,9 @@ format=$format_normal
   [[ -n "$output" ]] && output+=.c
 
 [[ -n "$write" && "$write" == true ]] && \
-  echo -e "Shellcode extracted to $output\n" >> /dev/stderr
+  msg "Shellcode extracted to $output" >> /dev/stderr
+[[ -n "$quiet" && "$quiet" == false ]] && \
+  echo >> /dev/stderr
 
 # Add the C array declaration at the beginning of the output
 [[ -n "$array" && "$array" == true ]] && \
