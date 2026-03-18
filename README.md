@@ -25,7 +25,7 @@ then assemble them.
 
 These options can be passed to the script after the target file path.
 
-```shell
+```console
   -a, --array           output as a C array named "shellcode"
   -w, --write           write to file "shellcode" or "shellcode.c"
   -q, --quite           do not print to stdout, implies write to file
@@ -37,7 +37,7 @@ These options can be passed to the script after the target file path.
 
 Write assembly instructions to a file.
 
-```shell
+```console
 bash-5.1$ ./shelly file -i
 (*) Enter contents of file.S (CTRL-D to end)
         .global _start
@@ -49,7 +49,7 @@ _start:
 
 Write assembly instructions to a file and assemble them.
 
-```shell
+```console
 bash-5.1$ ./shelly file -i -s
 (*) Enter contents of file.S (CTRL-D to end)
         .global _start
@@ -64,10 +64,24 @@ _start:
 0xb8,0xfe,0xca,0x00,0x00,0x57
 ```
 
+Attempt to assemble incorrect instructions shall fail and the assembler output
+shall be printed to terminal.
+
+```console
+bash-5.1$ ./shelly file -i -s
+(*) Enter contents of file.S (CTRL-D to end)
+rubbish
+(*) Written file.S
+(*) Assembling file.S...
+(x) Assembly failed
+(x) file.S: Assembler messages:
+(x) file.S:1: Error: no such instruction: `rubbish'
+```
+
 Write assembly instructions to a file and assemble them. Redirect `stderr` to
 bit bucker to avoid printing logs in terminal.
 
-```shell
+```console
 bash-5.1$ ./shelly file -i -s 2>/dev/null
         .global _start
 _start:
@@ -79,28 +93,28 @@ _start:
 Attempt to extract shellcode from a file that is not an object or ELF file shall
 fail.
 
-```shell
+```console
 bash-5.1$ ./shelly file.S
-(*) File file.S not ELF
+(!) File file.S not ELF
 ```
 
 Extract shellcode from an object file.
 
-```shell
+```console
 bash-5.1$ ./shelly file.o
 0xb8,0xfe,0xca,0x00,0x00,0x57
 ```
 
 Extract shellcode from an ELF file.
 
-```shell
+```console
 bash-5.1$ ./shelly file
 0xb8,0xfe,0xca,0x00,0x00,0x57
 ```
 
 Extract shellcode from an ELF file as a C array.
 
-```shell
+```console
 bash-5.1$ ./shelly file -a
 unsigned char shellcode[] = {
     0xb8, 0xfe, 0xca, 0x00, 0x00, 0x57
@@ -110,7 +124,7 @@ unsigned char shellcode[] = {
 Extract shellcode from an ELF file but do not print to terminal. Quite operation
 implies shellode is written to a file on disk.
 
-```shell
+```console
 bash-5.1$ ./shelly file -q
 Shellcode extracted to shellcode
 
@@ -120,7 +134,7 @@ bash-5.1$ cat shellcode
 
 Extract shellcode from an ELF file and write them to a file on disk.
 
-```shell
+```console
 bash-5.1$ ./shelly file -a -w
 Shellcode extracted to shellcode.c
 
@@ -152,7 +166,7 @@ If you know git and bash who is stopping you!
 Run the script after making sure the dependencies are installed and available in
 system path. What is even the point otherwise?!
 
-```shell
+```console
 %%%%%%%%%%%%%%%%%#######%%%%#**#%%###*++*****++++*****++*###*###****##*++++
 %%%%%%%%%%%%%%%%%%####%%%%%%#+**#####++***#*************#####**###**#%#*++*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%#*#*####***###************#######**#********##%
