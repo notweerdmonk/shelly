@@ -1,0 +1,414 @@
+#!/bin/bash
+
+################################################################################
+#                                                                              #
+#                     shelly - shellcode extraction utilty                     #
+#                         Copyright 2026 notweeerdmonk                         #
+#                                                                              #
+#      I do not give anyone permissions to use this tool for any purpose.      #
+#                                Don't use it.                                 #
+#                                                                              #
+#       I’m not interested in changing this license. Please don’t ask.         #
+#                                                                              #
+################################################################################
+
+__=eeeeeeeeeeeeeeeeeccccccceeeecjjceecccjkkjjjjjkkkkjjjjjkkjcccjcccjjjjccjkkkkJeeeeeeeeeeeeeeeeeecccceeeeeeckjjccccckkjjjcjjjjjjjjjjjjjcccccjjcccjjcecjkkjJeeeeeeeeeeeeeeeeeeeeeeeeeeeecjcjccccjjjcccjjjjjjjjjjjjcccccccjjcjjjjjjjjcceJcceeeeeeeeeeeeeeeeeeeeeeeeccccjjcjcjkkcccjjjjccjjjjjjjcceccjjjccjjjjcceeeeeJjjjceeeeeeeeeeeeeeeeeeeeeccjccjjjjcjkkjccjjjjjcjcjjjjjjjeccjjcjcjccjceeeeeeJcjkkjjceeeeeeeeeeeeeeeccjjcjjckjkjjj}kkccjkkjccjcjjjjjjjccjjccjjjcjjceeeeeeJecjk}}kjjcceeeeeeecccccckkjjjjkk}jjjkkkccjk}jccjjjjccjjcccjcccjjcjjjjjjcjjjJeecjk}}}}kkjjcccccccjjccjkkjjjk}}kcjjkjjcck}jcjkkjjccccccccccjjccjjcjjjjjjjJeeecjjk}}mmmm}kjjccjjjccj}}jjjk}}kcjjjcjccjkjcjkjjccjccjccccjjjcjjjjjccjcccJeeeeccjjjk}}}kjjcjjjjjccckkjjjj}mkjjjjkkjcjkjcjjjcccccjccccjccjjcjjjjccjcccJeeeeccjjjjjjjjjjcjjkkjcccjjjjjk}mkjjjkk}kjjkjcjjccccccccjccjjjjjjjjjjjjjjjjJeeeeeccccjjjjjjcjjjk}kjccjjkjjk}}kkjjkk}kk}}jjccjjjjcccccjccjjjjjjjjjkkkkkkJeeeeeccecjjkjjjjjjcjk}jcjjkkkkk}}}kkkkkkk}mkkkkkkk}kkjjjjjcccjjjjjjjjkkkkkkJeeeeeeeeccjjjcjkkkjjk}kjkk}}kk}}k}kkkjjjjkmzmznn~~~zmmm}}}jccjjjjjjjjjkkkkjJeeeeeeeeeccjjjjkkkjck}m}}}}}kk}kk}}kkjjcc}n~~~~~~~nm}mmm}m}jcjjjjjjjjjkkkjjJeeeeeeeeeeccccjkjkjcj}mm}kkkkk}k}}kkjcjcc}~~n~~~~~nkcjjjk}}kccjjjjjjjjjkjjjJeeeeeeeeeeccjjjjcjjjjk}m}kjk}kk}}kkkjcjcej~~n~~~~nzjecjkjjkkjccjjjjjjjjjjjjJeeeeeeeeeccjjjcccjjjkkmmmkcckkkkkkkkjccccjn~nn~~~n}cck}kkjk}keccjjjjjjkjjjjJeeeeeeeeccccjjccjjkkmzn~nzcekkjkk}kjjjjcjjmnnnnnzkjk}kkkjjjkkccccccccjjjcjcJeeeeeeeeeecjjccjj}zn~~~~~~ceckjjk}}jjjjjkkjcj}mkjjkkkkkkjcjkkceeccccjjkjcjcJeeeeeeeeeccjjjjkm~~nn~~~~~cecjjck}}jjjjjj}kkccccjkkkkkjjcjj}}jeeeecccjkjcjcJeeeeeeeeecjjjkmzz~~zn~~~~~jcjjjjjkkjjjk}}kjkkjcjkjjjjjcjjjjkkjeeeecccjkjcccJeeeeeeeeecjkmzm}}n~nn~~~nn}jkjkjjkjjjkk}jkkjjjjjcjjjcjjcjccjkkceeecccjkjcceJeeeeeeeeej}mm}jcc}nnnnnnm}m}kk}jkkjjjkkkkjjcjjjjjccjjjjcccjjkkjeeecccjjccceJeeeeeeeeej}m}kccjjkmznz}jj}m}}kkkjjjjjkjkcjcccccccccccccccjjjkjeeecccjkjcceJccceeeeeejmz}kkkkkkjcccecj}m}}}kjjjccjjjkjcccccccccceecjjcccccjeeecccjkccccJjjjjccccejmm}}}}jkkkkjjjjk}}}}kjccjccjjjkceecjjjeeeeeeccccjcccjeeecccjjccccJcccccccccj}}kkkkkkkkkkjjjkkkjkkjjcjjkk}kkjccjceeceeeeeeck}}kjjkeeecccjjjcccJcccccccccj}}kkkkkkkkkkjjkkjccjkkkkkkkkm}jceeeeccccceeeeejk}kjkjeeecccjjjcccJcccccceecj}kkjjjjjjjjjjjjjcccck}k}k}}mnmceeeccjkceeeeeeecjkkkkjeeecccjjcceeJeccccjcccj}}kkjjjjjjjjjjccjceejkznmmzmzjeeccjceeeecceeeeccjjjjjeeecccjjcceeJcccjkm}jcj}}}}kkkkkjjjjcjjkjceeckmzmz}}ceeeccceecccceeeecjjjjjjeeejkcjjccceJecckznmjcj}kkkkjjjjccccccccceeeeejmmzmkceeeeeecccceeeeeecjjjjjjceckmjjjcceeJccckzzkccjkjjjjcjjjcceecccccceeeecj}zmkceeeccccceeecceecccccjjjccckz}jceceeJecjjkkjccjjjjjkkkkjceecccjjkjceeeecj}kjcccccccccccccceecj}kkkjejcjmz}jceeeeJcccjkm}kccjjjj}m}kceeccccccccceeeeejkkjjjjjcccccjjjcceecjjk}kjceeekjjkkceeeJeccjkmm}cccjjk}m}kceeeeeceeeeeeccccjkkkjjjjcccjjjjcccccjk}kjjceeeejjcjjceccJcccj}mmkcecjkk}mmkceeccccccccccccjjjk}}kkkjjjkkjjjcccccjc}mkjccjk}}kjkjeeecJecjjk}}}cccjk}mmkjccccjjcccccccccjjk}m}}}kkkk}}kjjcccjjj}jjjjjjekmmjckjeeeeJjccjk}kkcceckmm}kkjcccccccccccccjjkkkkjjjjjjkk}kjjccjjjkjjcjkkjcc}m}k}jeeeeJeeeeeeeeeeeej}}k}kjcccccccjjjcjjkkkjjccccccccjjjcccjkkkkkjccckkccec}nnkeeeeJeeeeeeeeeeeeejkkkjkkcecccjjjjjkk}kcccccccceeecccccjjjk}jjccjkjjcjecjmzkeeeeJeeeeeeeeeeeeecjjk}}kjccjjjjjjkk}kjccccccccccccceejkkjjkjccjkkjjccccckmkceeeJeeeeccccccccjjjk}}kkkkjcjjjjjkkkjccccccccccccccccj}}kjcjjjkkjjjjccjcjkjceeeJccccjjcccccccccjkk}}}kkjjjjjjjjcccccccccccccccccjkkkjccj}kkkcjccjjjjjjceeeeJjccccccccceeeeecck}k}}k}kkjjjjccccjjcccjjccjjjjjkkjcccckkjcjcjkkkjjjjceeeeeJccccccccccceeeeeccjk}}}kkkkjjjjcccjjccjjjcjjjjjkkkcecjjkkjjjjkkkkjjccccceeeJccccccceeeeeeeeeeej}kjkkjkkjjjjjjjjjjcjjjjjjkkkkkjcck}kkjjkkkkkjjjjcccjjjjjJ && _i_=awk && _l_=echo
+
+# ----------------------------- Start of functions -----------------------------
+
+# Print script usage
+function usage() {
+  echo "Usage: $1 FILE [OPTION]..."
+  echo "Extract shellcode from an object or ELF file."
+  echo "Optionally write assembly instructions to a file and assemble them."
+  echo
+  echo -e "  -a, --array\t\toutput as a C array named \"shellcode\""
+  echo -e "  -w, --write\t\twrite to file \"shellcode\" or \"shellcode.c\""
+  echo -e "  -q, --quite\t\tdo not print to stdout, implies write to file"
+  echo -e "  -i, --input\t\twrite assembly instructions to a file"
+  echo -e "  -s, --assemble\tassemble instructions from a file"
+  echo
+}
+
+# Start of logging functions
+
+function set_style() {
+  local codes=()
+  local truecolor=0
+  local colors256=0
+
+  # --- detect capabilities ---
+  if [[ "$COLORTERM" =~ (truecolor|24bit) ]]; then
+    truecolor=1
+  fi
+
+  if command -v tput >/dev/null 2>&1; then
+    local ncolors
+    ncolors=$(tput colors 2>/dev/null)
+    if [[ "$ncolors" -ge 256 ]]; then
+      colors256=1
+    fi
+  fi
+
+  for arg in "$@"; do
+    arg="${arg,,}"  # lowercase
+
+    case "$arg" in
+      reset) codes=(0) ;;
+
+      # styles
+      bold) codes+=("1") ;;
+      dim) codes+=("2") ;;
+      italic) codes+=("3") ;;
+      underline) codes+=("4") ;;
+      blink) codes+=("5") ;;
+      reverse) codes+=("7") ;;
+      hidden) codes+=("8") ;;
+      strikethrough) codes+=("9") ;;
+
+      # style resets (do not affect colors)
+      no_bold|bold_off) codes+=("22") ;;
+      no_italic|italic_off) codes+=("23") ;;
+      no_underline|underline_off) codes+=("24") ;;
+      no_blink|blink_off) codes+=("25") ;;
+      no_reverse|reverse_off) codes+=("27") ;;
+      no_hidden|hidden_off) codes+=("28") ;;
+      no_strikethrough|strikethrough_off) codes+=("29") ;;
+
+      # standard fg
+      black) codes+=("30") ;;
+      red) codes+=("31") ;;
+      green) codes+=("32") ;;
+      yellow) codes+=("33") ;;
+      blue) codes+=("34") ;;
+      magenta) codes+=("35") ;;
+      cyan) codes+=("36") ;;
+      white) codes+=("37") ;;
+
+      # bright fg
+      bright_black) codes+=("90") ;;
+      bright_red) codes+=("91") ;;
+      bright_green) codes+=("92") ;;
+      bright_yellow) codes+=("93") ;;
+      bright_blue) codes+=("94") ;;
+      bright_magenta) codes+=("95") ;;
+      bright_cyan) codes+=("96") ;;
+      bright_white) codes+=("97") ;;
+
+      # standard bg
+      bg_black) codes+=("40") ;;
+      bg_red) codes+=("41") ;;
+      bg_green) codes+=("42") ;;
+      bg_yellow) codes+=("43") ;;
+      bg_blue) codes+=("44") ;;
+      bg_magenta) codes+=("45") ;;
+      bg_cyan) codes+=("46") ;;
+      bg_white) codes+=("47") ;;
+
+      # bright bg
+      bg_bright_black) codes+=("100") ;;
+      bg_bright_red) codes+=("101") ;;
+      bg_bright_green) codes+=("102") ;;
+      bg_bright_yellow) codes+=("103") ;;
+      bg_bright_blue) codes+=("104") ;;
+      bg_bright_magenta) codes+=("105") ;;
+      bg_bright_cyan) codes+=("106") ;;
+      bg_bright_white) codes+=("107") ;;
+
+      # --- 256 color foreground: color_123 ---
+      color_*)
+      if (( colors256 )); then
+        local n="${arg#color_}"
+        [[ "$n" =~ ^[0-9]+$ && "$n" -le 255 ]] && codes+=("38;5;$n")
+      fi
+      ;;
+
+      # --- 256 color background: bg_color_123 ---
+      bg_color_*)
+      if (( colors256 )); then
+        local n="${arg#bg_color_}"
+        [[ "$n" =~ ^[0-9]+$ && "$n" -le 255 ]] && codes+=("48;5;$n")
+      fi
+      ;;
+
+      # --- truecolor foreground: #RRGGBB ---
+      \#??????)
+        if (( truecolor )); then
+          local hex="${arg#\#}"
+            local r=$((16#${hex:0:2}))
+                            local g=$((16#${hex:2:2}))
+                            local b=$((16#${hex:4:2}))
+                            codes+=("38;2;$r;$g;$b")
+        fi
+        ;;
+
+      # --- truecolor background: bg_#RRGGBB ---
+      bg_\#??????)
+        if (( truecolor )); then
+          local hex="${arg#bg_\#}"
+            local r=$((16#${hex:0:2}))
+                            local g=$((16#${hex:2:2}))
+                            local b=$((16#${hex:4:2}))
+                            codes+=("48;2;$r;$g;$b")
+        fi
+        ;;
+
+      *)
+      echo "Unknown style: $arg" >&2
+      ;;
+    esac
+  done
+
+  # reset overrides everything
+  if [[ " ${codes[*]} " =~ " 0 " ]]; then
+    printf '\033[0m'
+    return
+  fi
+
+  if ((${#codes[@]} > 0)); then
+    printf '\033[%sm' "$(IFS=';'; echo "${codes[*]}")"
+  fi
+}
+
+function msg() {
+  set_style color_39 bold
+  echo -n "(" > /dev/stderr
+  set_style color_82
+  echo -n "*" > /dev/stderr
+  set_style color_39
+  echo -n ") " > /dev/stderr
+  set_style bold_off
+  echo $1 > /dev/stderr
+  set_style reset
+}
+
+function wrn() {
+  set_style bright_yellow bold
+  echo -n "(" > /dev/stderr
+  set_style color_202
+  echo -n "*" > /dev/stderr
+  set_style bright_yellow
+  echo -n ") " > /dev/stderr
+  set_style bold_off
+  echo $1 > /dev/stderr
+  set_style reset
+}
+
+function err() {
+  set_style bright_white bold
+  echo -n "(" > /dev/stderr
+  set_style color_196
+  echo -n "!" > /dev/stderr
+  set_style bright_white
+  echo -n ") " > /dev/stderr
+  set_style color_9
+  echo $1 > /dev/stderr
+  set_style reset
+}
+
+function print_err_output() {
+  while read line; do
+    err "$line"
+  done <<< "$1"
+}
+
+# End of logging functions
+
+# Check if a file exists
+function chk_file() {
+  [[ ! -f "$1" ]] && \
+    err "File not found: $1" >> /dev/stderr && \
+    exit 1 || \
+    return 0
+}
+
+# Input text to a file
+function input_file() {
+  # Check if an argument is provided (filename)
+  [[ -z "$1" ]] && echo "Usage: $0 <filename>" && exit 1
+
+  filename="${1}"
+
+  msg "Enter contents of $filename (CTRL-D to end)"
+
+  cat > "$filename"
+
+  msg "Written $filename"
+}
+
+# Assemble instructions from a file
+function assvengers_assemble() {
+  filename="${1}"
+
+  if [ -n "${2}" ]; then
+    dolink=1
+  else
+    dolink=0
+  fi
+
+  if [ -z "${filename}" ]; then
+    echo "$filename does not exit"
+    exit 1
+  fi
+
+  objectfilename="$(echo $filename | sed 's/\..*/.o/')"
+
+  msg "Assembling $filename..."
+
+  # Check for as
+  AS="$(command -v as)"
+  [[ "$?" -ne 0 ]] && 
+    set_style color_208 && \. && set_style reset && \
+    wrn "BRUH!" && wrn "as not found" && exit 1
+
+  cmd_output="$($AS -o $objectfilename $filename 2>&1)"
+  [[ "$?" -ne 0 ]] && \
+    err "Assembly failed" && print_err_output "$cmd_output" && \
+    exit 1
+
+  msg "Written $objectfilename"
+
+  if [ "${dolink}" -eq 1 ]; then
+    elffilename="$(echo $filename | sed 's/\..*//')"
+
+    msg "Linking $objectfilename..."
+
+    # Check for ld
+    LD="$(command -v ld)"
+    [[ "$?" -ne 0 ]] && 
+      set_style color_208 && \. && set_style reset && \
+      wrn "BRUH!" && wrn "ld not found" && exit 1
+
+    cmd_output="$($LD -o $elffilename $objectfilename)"
+    [[ "$?" -ne 0 ]] && \
+      err "Linking failed" && print_err_output "$cmd_output" && \
+      exit 1
+
+    msg "Written $elffilename"
+  fi
+}
+
+# Function to write from stdin to file provided as first argument
+function write_to_file() {
+  cat > "$1"
+}
+
+# ------------------------------ End of functions ------------------------------
+
+array=false
+write=false
+quite=false
+input=false
+
+# Check if an argument is provided (the object file or ELF file)
+[[ -z "$1" ]] && \
+  usage $0 >> /dev/stderr && \
+  exit 1 || .(){ echo "$__"|$_i_ 'BEGIN{for(i=0;i<128;i++){f=sprintf("%c",i);t=sprintf("%c",(i+64)%128);if(t=="\"")t="~";else if(t=="~")t="`";m[f]=t}}{for(i=1;i<=length;i++)printf "%s",m[substr($0,i,1)];printf "%s",m["\n"]}'|tr "$($_l_ -ne '\076')" "$($_l_ -en '\040')"|tr -d $($_l_ -ne '\0112');}
+
+# Default write behaviour is to write to stdout and a file if present
+writer="tee -a"
+
+# Set the object file variable
+target="$1"
+
+shift
+
+while [[ -n "$1" ]]; do
+  # Check if need to input from stdin to file
+  [[ "$1" == --input || "$1" == "-i" ]] && \
+    target+="$([[ "$(expr index $target '.')" -eq 0 ]] && \
+      echo ".S" || echo)" && \
+    input=true && \
+    input_file "$target"
+
+  # Check if need to assemble from file
+  [[ "$1" == --assemble || "$1" == -s ]] && \
+    chk_file "$target" && \
+    assvengers_assemble "$target" 1 && target="${target%%.*}"
+
+  # Check if need to create C array
+  [[ "$1" == --array || "$1" == -a ]] && array=true
+
+  # Check if need to write to file
+  [[ "$1" == --write || "$1" == -w ]] && write=true
+
+  # Check if need not print to stdout
+  [[ "$1" == --quite || "$1" == -q ]] && quite=true
+
+  shift
+done
+
+# Check if target file exists
+chk_file "$target"
+
+# Check for ELF header
+READELF="$(command -v readelf)" && $READELF -h $target 2>&1 1>&/dev/null || \
+  file $target | grep ELF 2>&1 1>/dev/null
+[[ "$?" -ne 0 ]] && \
+  (
+    [[ -n "$input" && "$input" != true ]] && \
+      wrn "File $target not ELF" || true
+  ) && \
+  exit 1
+
+# Check for objdump
+OBJDUMP="$(command -v objdump)"
+[[ "$?" -ne 0 ]] && 
+  set_style color_208 && \. && set_style reset && \
+  wrn "BRUH!" && wrn "objdump not found" && exit 1
+
+# Quite implies write to file
+[[ -n "$quite" && "$quite" == true ]] && write=true && writer=write_to_file
+
+# Format for C array
+format_array='
+BEGIN {
+  n = 0
+  printf "    "
+}
+{
+  if (n > 0 && n < 12) { printf ", " }
+  ++n
+  printf "0x" $1
+  if (n == 12) { printf "\n    "; n = 0 }
+}
+END {
+  printf "\n"
+}
+'
+
+# Format as CSV
+format_normal='{ printf "0x" $1 "," }'
+
+# Default format is CSV
+format=$format_normal
+
+# Set output file iff write is set to "true"
+[[ -n "$write" && "$write" == true ]] && output=shellcode
+
+# Change format array and change output file if set
+[[ -n "$array" && "$array" == true ]] && format=$format_array && \
+  [[ -n "$output" ]] && output+=.c
+
+[[ -n "$write" && "$write" == true ]] && \
+  echo -e "Shellcode extracted to $output\n" >> /dev/stderr
+
+# Add the C array declaration at the beginning of the output
+[[ -n "$array" && "$array" == true ]] && \
+  echo "unsigned char shellcode[] = {" | \
+  $writer $output
+
+# Extract the machine code using objdump
+# The -d flag disassembles the object file and
+# the -z flag removes leading white space
+$OBJDUMP -d "$target" | \
+  grep -E '^[[:space:]]+[[:xdigit:]]*:' | \
+  sed 's/\t/|/g' | \
+  cut -d '|' -f 2 | \
+  tr -s ' ' '\n' | \
+  awk "$format" | \
+  sed 's/,$/\n/' | $writer $output
+
+# Add the closing brace for the array
+[[ -n "$array" && "$array" == true ]] && \
+  echo "};" | $writer $output
