@@ -290,7 +290,7 @@ function assvengers_assemble() {
 
 # Function to write from stdin to file provided as first argument
 function write_to_file() {
-  cat > "$1"
+  cat >> "$1"
 }
 
 # ------------------------------ End of functions ------------------------------
@@ -391,9 +391,9 @@ format=$format_normal
   [[ -n "$output" ]] && output+=.c
 
 [[ -n "$write" && "$write" == true ]] && \
-  msg "Shellcode extracted to $output" >> /dev/stderr
-[[ -n "$quiet" && "$quiet" == false ]] && \
-  echo >> /dev/stderr
+  msg "Shellcode extracted to $output" >> /dev/stderr &&
+  [[ -n "$quiet" && "$quiet" == false ]] && \
+    echo >> /dev/stderr
 
 # Add the C array declaration at the beginning of the output
 [[ -n "$array" && "$array" == true ]] && \
