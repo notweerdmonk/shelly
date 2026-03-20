@@ -6,9 +6,9 @@
 
 ## Overview
 
-The `bash` script can extract shellcode from object or ELF files. Optionally it
-can create a new file and write assembly instructions from `stdin` to the file,
-then assemble them.
+The `bash` script can extract shellcode from object or ELF files or standard
+input. Optionally it can create a new file and write assembly instructions from
+standard input to the file, then assemble them.
 
 ---
 
@@ -31,6 +31,7 @@ These options can be passed to the script after the target file path.
   -q, --quite           do not print to stdout, implies write to file
   -i, --input           write assembly instructions to a file
   -s, --assemble        assemble instructions from a file
+  -h, --help            show this message
 ```
 
 ## Example usage
@@ -96,6 +97,20 @@ fail.
 ```console
 bash-5.1$ ./shelly file.S
 (!) File file.S not ELF
+```
+
+Extract shellcode from standard input.
+
+```console
+bash-5.1$ ./shelly < file
+0xb8,0xfe,0xca,0x00,0x00,0x57
+```
+
+Extract shellcode from piped input.
+
+```console
+bash-5.1$ cat file | ./shelly
+0xb8,0xfe,0xca,0x00,0x00,0x57
 ```
 
 Extract shellcode from an object file.

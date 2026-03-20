@@ -27,6 +27,7 @@ function usage() {
   echo -e "  -q, --quiet\t\tdo not print to stdout, implies write to file"
   echo -e "  -i, --input\t\twrite assembly instructions to a file"
   echo -e "  -s, --assemble\tassemble instructions from a file"
+  echo -e "  -h, --help\t\tshow this message"
   echo
 }
 
@@ -216,9 +217,13 @@ function print_err_output() {
 
 # Check if a file exists
 function chk_file() {
-  [[ ! -f "$1" ]] && \
-    err "File not found: $1" >> /dev/stderr && \
-    exit 1 || \
+  [[ ! -f "$1" && ! -c "$1" ]] && \
+    {
+      [[ -n $2 ]] && return 1 || \
+      err "$1" && \
+      err "File not found: $1" >> /dev/stderr && \
+      exit 1
+    } || \
     return 0
 }
 
@@ -300,20 +305,25 @@ write=false
 quiet=false
 input=false
 
-# Check if an argument is provided (the object file or ELF file)
-[[ -z "$1" ]] && \
-  usage $0 >> /dev/stderr && \
-  exit 1 || .(){ echo "$__"|$_i_ 'BEGIN{for(i=0;i<128;i++){f=sprintf("%c",i);t=sprintf("%c",(i+64)%128);if(t=="\"")t="~";else if(t=="~")t="`";m[f]=t}}{for(i=1;i<=length;i++)printf "%s",m[substr($0,i,1)];printf "%s",m["\n"]}'|tr "$($_l_ -ne '\076')" "$($_l_ -en '\040')"|tr -d $($_l_ -ne '\0112');}
-
-# Default write behaviour is to write to stdout and a file if present
-writer="tee -a"
-
-# Set the object file variable
+# Set the target file variable (object or ELF file)
 target="$1"
 
-shift
+# Check if first argument is an option instead of a file
+[[ ${target:0:1} == - ]] && unset target || shift
 
+# Setup handler for EXIT
+[[ -z $target ]] && \
+  use_stdin=true && \
+  target=/dev/stdin && \
+  trap '[[ -n "$tempfile" ]] && rm "$tempfile"' EXIT
+
+# Parse arguments
 while [[ -n "$1" ]]; do
+  # Check if help is needed ;)
+  [[ "$1" == --help || "$1" == "-h" ]] && \
+    usage $0 >> /dev/stderr && \
+    exit 1 || .(){ echo "$__"|$_i_ 'BEGIN{for(i=0;i<128;i++){f=sprintf("%c",i);t=sprintf("%c",(i+64)%128);if(t=="\"")t="~";else if(t=="~")t="`";m[f]=t}}{for(i=1;i<=length;i++)printf "%s",m[substr($0,i,1)];printf "%s",m["\n"]}'|tr "$($_l_ -ne '\076')" "$($_l_ -en '\040')"|tr -d $($_l_ -ne '\0112');}
+
   # Check if need to input from stdin to file
   [[ "$1" == --input || "$1" == "-i" ]] && \
     target+="$([[ "$(expr index $target '.')" -eq 0 ]] && \
@@ -338,17 +348,36 @@ while [[ -n "$1" ]]; do
   shift
 done
 
+# Create temporary file
+[[ $use_stdin == true ]] && \
+  tempfile="$(mktemp -q tmp."${0##*/}".XXXXXX)" || \
+  {
+    err "mktemp failed"
+    exit 1
+  }
+
 # Check if target file exists
-chk_file "$target"
+chk_file "$target" 1
+
+# Read from stdin or pipe
+chk_file_status=$?
+[[ $use_stdin == true ]] && \
+  {
+    [[ $chk_file_status -gt 0 ]] && \
+      cat - &>"$tempfile" || \
+      cat "$target" > "$tempfile"
+  } && \
+  target="$tempfile"
+
 
 # Check for ELF header
 READELF="$(command -v readelf)" && $READELF -h $target 2>&1 1>&/dev/null || \
   file $target | grep ELF 2>&1 1>/dev/null
 [[ "$?" -ne 0 ]] && \
-  (
-    [[ -n "$input" && "$input" != true ]] && \
-      wrn "File $target not ELF" || true
-  ) && \
+  {
+    [[ $use_stdin == true ]] && usage $0 >> /dev/stderr || \
+    wrn "File $target not ELF"
+  } && \
   exit 1
 
 # Check for objdump
@@ -357,8 +386,11 @@ OBJDUMP="$(command -v objdump)"
   set_style color_208 && \. && set_style reset && \
   wrn "BRUH!" && wrn "objdump not found" && exit 1
 
+# Default write behaviour is to write to stdout and a file if present
+writer="tee -a"
+
 # Quite implies write to file
-[[ -n "$quiet" && "$quiet" == true ]] && write=true && writer=write_to_file
+[[ "$quiet" == true ]] && write=true && writer=write_to_file
 
 # Format for C array
 format_array='
@@ -384,19 +416,19 @@ format_normal='{ printf "0x" $1 "," }'
 format=$format_normal
 
 # Set output file iff write is set to "true"
-[[ -n "$write" && "$write" == true ]] && output=shellcode
+[[ "$write" == true ]] && output=shellcode
 
 # Change format array and change output file if set
-[[ -n "$array" && "$array" == true ]] && format=$format_array && \
+[[ "$array" == true ]] && format=$format_array && \
   [[ -n "$output" ]] && output+=.c
 
-[[ -n "$write" && "$write" == true ]] && \
+[[ "$write" == true ]] && \
   msg "Shellcode extracted to $output" >> /dev/stderr &&
-  [[ -n "$quiet" && "$quiet" == false ]] && \
+  [[ "$quiet" == false ]] && \
     echo >> /dev/stderr
 
 # Add the C array declaration at the beginning of the output
-[[ -n "$array" && "$array" == true ]] && \
+[[ "$array" == true ]] && \
   echo "unsigned char shellcode[] = {" | \
   $writer $output
 
@@ -412,5 +444,5 @@ $OBJDUMP -d "$target" | \
   sed 's/,$/\n/' | $writer $output
 
 # Add the closing brace for the array
-[[ -n "$array" && "$array" == true ]] && \
+[[ "$array" == true ]] && \
   echo "};" | $writer $output
