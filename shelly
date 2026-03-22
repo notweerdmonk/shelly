@@ -347,11 +347,13 @@ while [[ -n "$1" ]]; do
     target+="$([[ "$(expr index $target '.')" -eq 0 ]] && \
       echo ".S" || echo)" && \
     input=true && \
-    input_file "$target"
+    input_file "$target" && \
+    exit 0
 
   # Check if need to assemble from file
   [[ "$1" == --assemble || "$1" == -s ]] && \
-    assvengers_assemble "$target" 1 && target="${target%%.*}"
+    assvengers_assemble "$target" 1 && \
+    target="${target%%.*}"
 
   # Check if need to create C array
   [[ "$1" == --array || "$1" == -a ]] && array=true
