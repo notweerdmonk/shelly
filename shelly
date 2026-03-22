@@ -231,7 +231,7 @@ function input_file() {
   # Check if an argument is provided (filename)
   [[ -z "$1" ]] && echo "Usage: $0 <filename>" && exit 1
 
-  filename="${1}"
+  local filename="${1}"
 
   msg "Enter contents of $filename (CTRL-D to end)"
 
@@ -242,12 +242,12 @@ function input_file() {
 
 # Assemble instructions from a file
 function assvengers_assemble() {
-  filename="${1}"
+  local filename="${1}"
 
   if [ -n "${2}" ]; then
-    dolink=1
+    local dolink=1
   else
-    dolink=0
+    local dolink=0
   fi
 
   if [ -z "${filename}" ]; then
@@ -255,17 +255,17 @@ function assvengers_assemble() {
     exit 1
   fi
 
-  objectfilename="$(echo $filename | sed 's/\..*/.o/')"
+  local objectfilename="${filename/.S/}.o"
 
   msg "Assembling $filename..."
 
   # Check for as
-  AS="$(command -v as)"
+  local AS="$(command -v as)"
   [[ "$?" -ne 0 ]] && 
     set_style color_208 && \. && set_style reset && \
     wrn "BRUH!" && wrn "as not found" && exit 1
 
-  cmd_output="$($AS -o $objectfilename $filename 2>&1)"
+  local cmd_output="$($AS -o $objectfilename $filename 2>&1)"
   [[ "$?" -ne 0 ]] && \
     err "Assembly failed" && print_err_output "$cmd_output" && \
     exit 1
@@ -273,12 +273,14 @@ function assvengers_assemble() {
   msg "Written $objectfilename"
 
   if [ "${dolink}" -eq 1 ]; then
-    elffilename="$(echo $filename | sed 's/\..*//')"
+    [[ "$filename" == *.S ]] && \
+      elffilename="${filename/.S/}" || \
+      elffilename="$filename".elf
 
     msg "Linking $objectfilename..."
 
     # Check for ld
-    LD="$(command -v ld)"
+    local LD="$(command -v ld)"
     [[ "$?" -ne 0 ]] && 
       set_style color_208 && \. && set_style reset && \
       wrn "BRUH!" && wrn "ld not found" && exit 1
@@ -338,14 +340,16 @@ chk_file_status=$?
 # Parse arguments
 while [[ -n "$1" ]]; do
   # Check if help is needed ;)
-  [[ "$1" == --help || "$1" == "-h" ]] && \
+  [[ "$1" == --help || "$1" == -h ]] && \
     usage $0 >> /dev/stderr && \
     exit 1 || .(){ echo "$__"|$_i_ 'BEGIN{for(i=0;i<128;i++){f=sprintf("%c",i);t=sprintf("%c",(i+64)%128);if(t=="\"")t="~";else if(t=="~")t="`";m[f]=t}}{for(i=1;i<=length;i++)printf "%s",m[substr($0,i,1)];printf "%s",m["\n"]}'|tr "$($_l_ -ne '\076')" "$($_l_ -en '\040')"|tr -d $($_l_ -ne '\0112');}
 
   # Check if need to input from stdin to file
-  [[ "$1" == --input || "$1" == "-i" ]] && \
-    target+="$([[ "$(expr index $target '.')" -eq 0 ]] && \
-      echo ".S" || echo)" && \
+  [[ "$1" == --input || "$1" == -i ]] && \
+    {
+      [[ "$target" != *.S ]] && target+=".S"
+      [[ -n "$tempfile" ]] && rm "$tempfile" && unset tempfile
+    } && \
     input=true && \
     input_file "$target" && \
     exit 0
@@ -353,7 +357,7 @@ while [[ -n "$1" ]]; do
   # Check if need to assemble from file
   [[ "$1" == --assemble || "$1" == -s ]] && \
     assvengers_assemble "$target" 1 && \
-    target="${target%%.*}"
+    target="${elffilename}"
 
   # Check if need to create C array
   [[ "$1" == --array || "$1" == -a ]] && array=true
