@@ -374,11 +374,12 @@ while [[ -n "$1" ]]; do
 done
 
 # Check for ELF header
-READELF="$(command -v readelf)" && $READELF -h $target 2>&1 1>&/dev/null || \
-  file $target | grep ELF 2>&1 1>/dev/null
+READELF="$(command -v readelf)" && "$READELF" -h "$target" 2>&1 1>&/dev/null || \
+  file "$target" | grep ELF 2>&1 1>/dev/null
 [[ "$?" -ne 0 ]] && \
   {
-    [[ $use_stdin == true ]] && usage $0 >> /dev/stderr || \
+    [[ $use_stdin == true && -s "$target" ]] && \
+      usage $0 >> /dev/stderr || \
     wrn "File $target not ELF"
   } && \
   exit 1
