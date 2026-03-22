@@ -220,7 +220,6 @@ function chk_file() {
   [[ ! -f "$1" && ! -c "$1" ]] && \
     {
       [[ -n $2 ]] && return 1 || \
-      err "$1" && \
       err "File not found: $1" >> /dev/stderr && \
       exit 1
     } || \
@@ -311,12 +310,30 @@ target="$1"
 # Check if first argument is an option instead of a file
 [[ ${target:0:1} == - ]] && unset target || shift
 
-# Setup handler for EXIT
+# Create temporary file and setup handler for EXIT
 [[ -z $target ]] && \
   use_stdin=true && \
   target=/dev/stdin && \
+  {
+    tempfile="$(mktemp -q tmp."${0##*/}".XXXXXX 2>/dev/null)" || \
+      {
+        err "mktemp failed" && exit 1
+      }
+  } && \
   trap '[[ -n "$tempfile" ]] && rm "$tempfile"' EXIT
 
+# Check if target file exists
+chk_file "$target" 1
+
+# Read from stdin or pipe
+chk_file_status=$?
+[[ $use_stdin == true ]] && \
+  {
+    [[ $chk_file_status -gt 0 ]] && \
+      cat - &>"$tempfile" || \
+      cat "$target" > "$tempfile"
+  } && \
+  target="$tempfile"
 
 # Parse arguments
 while [[ -n "$1" ]]; do
@@ -334,7 +351,6 @@ while [[ -n "$1" ]]; do
 
   # Check if need to assemble from file
   [[ "$1" == --assemble || "$1" == -s ]] && \
-    chk_file "$target" && \
     assvengers_assemble "$target" 1 && target="${target%%.*}"
 
   # Check if need to create C array
@@ -348,29 +364,6 @@ while [[ -n "$1" ]]; do
 
   shift
 done
-
-# Create temporary file
-[[ $use_stdin == true ]] && \
-  {
-    tempfile="$(mktemp -q tmp."${0##*/}".XXXXXX 2>/dev/null)" || \
-      {
-        err "mktemp failed" && exit 1
-      }
-  }
-
-# Check if target file exists
-chk_file "$target" 1
-
-# Read from stdin or pipe
-chk_file_status=$?
-[[ $use_stdin == true ]] && \
-  {
-    [[ $chk_file_status -gt 0 ]] && \
-      cat - &>"$tempfile" || \
-      cat "$target" > "$tempfile"
-  } && \
-  target="$tempfile"
-
 
 # Check for ELF header
 READELF="$(command -v readelf)" && $READELF -h $target 2>&1 1>&/dev/null || \
