@@ -350,10 +350,9 @@ done
 
 # Create temporary file
 [[ $use_stdin == true ]] && \
-  tempfile="$(mktemp -q tmp."${0##*/}".XXXXXX)" || \
   {
-    err "mktemp failed"
-    exit 1
+    tempfile="$(mktemp tmp."${0##*/}".XXXXXX)" || \
+    err "mktemp failed" && exit 1
   }
 
 # Check if target file exists
