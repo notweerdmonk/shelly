@@ -317,6 +317,7 @@ target="$1"
   target=/dev/stdin && \
   trap '[[ -n "$tempfile" ]] && rm "$tempfile"' EXIT
 
+
 # Parse arguments
 while [[ -n "$1" ]]; do
   # Check if help is needed ;)
@@ -351,8 +352,10 @@ done
 # Create temporary file
 [[ $use_stdin == true ]] && \
   {
-    tempfile="$(mktemp tmp."${0##*/}".XXXXXX)" || \
-    err "mktemp failed" && exit 1
+    tempfile="$(mktemp -q tmp."${0##*/}".XXXXXX 2>/dev/null)" || \
+      {
+        err "mktemp failed" && exit 1
+      }
   }
 
 # Check if target file exists
