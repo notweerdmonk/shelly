@@ -260,12 +260,14 @@ function assvengers_assemble() {
   msg "Assembling $filename..."
 
   # Check for as
-  local AS="$(command -v as)"
+  local AS
+  AS="$(command -v as)"
   [[ "$?" -ne 0 ]] && 
     set_style color_208 && \. && set_style reset && \
     wrn "BRUH!" && wrn "as not found" && exit 1
 
-  local cmd_output="$($AS -o $objectfilename $filename 2>&1)"
+  local cmd_output
+  cmd_output="$($AS -o $objectfilename $filename 2>&1)"
   [[ "$?" -ne 0 ]] && \
     err "Assembly failed" && print_err_output "$cmd_output" && \
     exit 1
@@ -280,7 +282,8 @@ function assvengers_assemble() {
     msg "Linking $objectfilename..."
 
     # Check for ld
-    local LD="$(command -v ld)"
+    local LD
+    LD="$(command -v ld)"
     [[ "$?" -ne 0 ]] && 
       set_style color_208 && \. && set_style reset && \
       wrn "BRUH!" && wrn "ld not found" && exit 1
