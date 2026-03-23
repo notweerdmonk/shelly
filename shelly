@@ -354,7 +354,6 @@ while [[ -n "$1" ]]; do
       [[ -n "$tempfile" ]] && rm "$tempfile" && unset tempfile
       true
     } && \
-    echo $target && \
     input=true && \
     input_file "$target" && \
     exit 0
